@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model projects {
+  id             String   @id
+  name           String
+  teamId         String
+  urlEnviorments String[] @default([])
+  teams          teams    @relation(fields: [teamId], references: [id])
+  tasks          tasks[]
+}
+
+model task_comments {
+  id      String @id
+  comment String
+  taskId  String
+  tasks   tasks  @relation(fields: [taskId], references: [id])
+}
+
+model tasks {
+  id            String          @id
+  title         String
+  description   String?
+  originSite    String
+  xyPosition    Int[]
+  priority      Priority
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime
+  projectId     String
+  task_comments task_comments[]
+  projects      projects        @relation(fields: [projectId], references: [id])
+}
+
+model teams {
+  id       String     @id
+  name     String
+  projects projects[]
+  users    users[]    @relation("TeamsToUsers")
+}
+
+model users {
+  id       String  @id
+  email    String  @unique
+  password String?
+  settings Json?   @default("{}")
+  teams    teams[] @relation("TeamsToUsers")
+}
+
+enum Priority {
+  NO_PRIORITY
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}

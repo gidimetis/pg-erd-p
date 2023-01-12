@@ -1,11 +1,11 @@
-import { myPackage } from '../src';
+import myTest from '../src';
 
 describe('index', () => {
-  describe('myPackage', () => {
+  describe('myTest', () => {
     it('should return a string containing the message', () => {
       const message = 'Hello';
 
-      const result = myPackage(message);
+      const result = myTest();
 
       expect(result).toMatch(message);
     });
